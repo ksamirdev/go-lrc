@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Lyrics Generator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <link href="./dist/main.css" rel="stylesheet" />
+</head>
+
+<body class="bg-white container text-primary">
+  <header class="py-5">
+    <h1 class="text-5xl font-bold text-center">Lyrics Generator</h1>
+  </header>
+
+  <main x-data="music" class="space-y-5">
+    <div class="w-full flex flex-row items-center gap-3">
+      <button class="border p-2 rounded-xl hover:bg-gray-200" @click="$refs['audio-input'].click()">
+        Insert Track
+      </button>
+
+      <input x-ref="audio-input" type="file" @change="update" accept="audio/*, video/mp4" class="hidden"
+        style="display: none" />
+      <audio x-ref="music-player" src="" controls x-on:timeupdate="updateTime" class="w-full flex-1"></audio>
+    </div>
+
+    <form class="bg-gray-100 flex flex-row p-5 rounded-full gap-3" @submit.prevent="addLyric">
+      <input x-ref="lyric-input" type="text" name="value" placeholder="Enter sentence"
+        class="flex-1 px-2 rounded-lg outline-none focus-within:ring focus-within:ring-primary focus:ring-offset-1 border-2 border-primary" />
+
+      <div class="space-x-1">
+        <button name="_action" value="add" type="submit"
+          class="bg-green-500 p-2 rounded-lg focus:ring focus:ring-offset-1 focus:ring-green-500 outline-none">
+          <i data-lucide="plus" class="stroke-gray-100 size-[20px]"></i>
+        </button>
+        <button type="button" @click="_export"
+          class="bg-blue-500 p-2 rounded-lg focus:ring focus:ring-offset-1 focus:ring-blue-500 outline-none">
+          <i data-lucide="share" class="stroke-gray-100 size-[20px]"></i>
+        </button>
+      </div>
+    </form>
+
+    <ul class="overflow-y-auto max-h-[60vh] pb-10 space-y-2">
+      <template x-for="(sentence, index) in lyrics" :key="index">
+        <div class="p-3 bg-gray-50 rounded-md flex flex-row gap-3">
+          <input x-bind:value="sentence.time" class="font-bold" @change="updateLyric(index, 'time')"></input>
+          <input x-bind:value="sentence.value" @change="updateLyric(index, 'value')" class="break-all flex-1"></input>
+
+          <button class="ml-auto border px-2 rounded-xl hover:bg-gray-200 focusbg-gray-200" @click="removeLyric(index)">
+            remove
+          </button>
+        </div>
+      </template>
+    </ul>
+
+
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    document.addEventListener("alpine:init", () => {
+      Alpine.data("music", () => ({
+        current: 0,
+        lyrics: [],
+
+        metadata: {
+          title: "",
+          artist: "",
+          album: "",
+          language: "",
+        },
+
+        updateTime() {
+          this.current = this.$el.currentTime;
+        },
+
+        update() {
+          const audio = this.$refs["music-player"];
+          const file = this.$el.files?.[0];
+
+          if (file && audio) {
+            audio.src = URL.createObjectURL(file);
+          }
+        },
+
+        addLyric() {
+          const formData = new FormData(this.$el);
+
+          this.$refs["lyric-input"].value = "";
+
+          this.lyrics.unshift({
+            value: formData.get("value"),
+            time: formatSeconds(this.current),
+          });
+        },
+
+        removeLyric(index) {
+          this.lyrics.splice(index, 1);
+        },
+
+        updateLyric(index, property) {
+          this.lyrics[index][property] = this.$el.value
+        },
+
+        async _export() {
+          const resp = await fetch('/lrc', { method: "POST", body: JSON.stringify({ lyrics: this.lyrics }) });
+          downloadFile(await resp.blob(), this.metadata.title)
+        },
+      }));
+    });
+
+    function downloadFile(blob, title) {
+      const url = URL.createObjectURL(blob);
+
+      const el = document.createElement("a");
+      el.href = url
+      el.download = `${title} Lyric.lrc`
+      el.click();
+      el.remove()
+    }
+
+    function formatSeconds(seconds) {
+      const minutes = Math.floor(seconds / 60).toString().padStart(2, '0')
+      var seconds = (seconds % 60).toFixed(2).padStart(5, '0');
+
+      return `${minutes}:${seconds}`;
+    }
+  </script>
+</body>
+
+</html>

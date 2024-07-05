@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-datetime-edit-ampm-field {
+  display: none;
+}
+input[type=time]::-webkit-clear-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+  -ms-appearance:none;
+  appearance: none;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator { background: none; display:none; appearance: none; }
