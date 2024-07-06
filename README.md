@@ -3,6 +3,7 @@
 The Lyrics Generator is a simple Go application designed to effortlessly create time-synced lyrics.
 
 ![App Preview](/assets/app.png)
+_Music: [Please Please Please by Sabrina Carpenter](https://open.spotify.com/track/5N3hjp1WNayUPZrA8kJmJP)_
 
 ### Features
 
