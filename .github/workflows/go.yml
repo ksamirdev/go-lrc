@@ -65,13 +65,12 @@ jobs:
           GOOS=${GOOSARCH%/*}
           GOARCH=${GOOSARCH#*/}
           BINARY_NAME=${{github.repository}}-$GOOS-$GOARCH
-          ENTRY_FILE=${{github.repository}}/cmd/main.go
-          echo "ENTRY=$ENTRY_FILE" >> $GITHUB_ENV
+
           echo "BINARY_NAME=$BINARY_NAME" >> $GITHUB_ENV
           echo "GOOS=$GOOS" >> $GITHUB_ENV
           echo "GOARCH=$GOARCH" >> $GITHUB_ENV
       - name: Build
-        run: go build -o "$BINARY_NAME" ./...
+        run: go build -o "$BINARY_NAME" ./.../go-lrc
       - name: Release Notes
         run: git log $(git describe HEAD~ --tags --abbrev=0)..HEAD --pretty='format:* %h %s%n  * %an <%ae>' --no-merges >> ".github/RELEASE-TEMPLATE.md"
       - name: Release with Notes
