@@ -65,9 +65,9 @@ func Routes() http.Handler {
 	})
 
 	// serving js
-	router.Get("/dist/main.js", func(w http.ResponseWriter, r *http.Request) {
+	router.Get("/index.js", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/javascript")
-		http.ServeFile(w, r, "web/templates/dist/main.js")
+		http.ServeFile(w, r, "web/templates/index.js")
 	})
 
 	router.Post("/lrc", func(w http.ResponseWriter, r *http.Request) {
@@ -83,9 +83,7 @@ func Routes() http.Handler {
 			return
 		}
 
-		lrc := helpers.GenerateLRC(music)
-
-		fmt.Fprintln(w, lrc)
+		fmt.Fprintln(w, helpers.GenerateLRC(music))
 	})
 
 	return router

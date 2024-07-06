@@ -7,9 +7,8 @@
     "tailwindcss": "^3.4.4"
   },
   "scripts": {
-    "minify": "minify input.js > dist/main.js",
-    "build": "minify && tailwindcss -i input.css -o dist/main.css",
+    "build": "tailwindcss -i input.css -o dist/main.css",
     "watch": "tailwindcss -i input.css -o dist/main.css --watch",
-    "clean": "rm -rf main.css dist/main.js"
+    "clean": "rm -rf ./dist"
   }
 }
