@@ -16,7 +16,7 @@ type Config struct {
 
 var DefaultConfig Config
 
-func Load() (Config, error) {
+func Load() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalln("Error loading .env file")
@@ -38,6 +38,4 @@ func Load() (Config, error) {
 	}
 
 	log.Println("Loaded .env!")
-
-	return DefaultConfig, nil
 }

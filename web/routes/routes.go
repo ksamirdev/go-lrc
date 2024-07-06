@@ -45,7 +45,7 @@ func Routes() http.Handler {
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		// if request header doesn't accepts text/html, then return a html template
 		if !helpers.SupportsHTML(r) {
-			w.Write([]byte("API is up and running"))
+			fmt.Fprint(w, "API is up and running!")
 			return
 		}
 
@@ -54,7 +54,7 @@ func Routes() http.Handler {
 		t, _ := template.ParseFiles("web/templates/index.html")
 		if err := t.Execute(w, nil); err != nil {
 			log.Fatalf("Error executing template: %s", err.Error())
-			w.Write([]byte("Error executing template"))
+			fmt.Fprint(w, "Error executing template")
 		}
 	})
 
