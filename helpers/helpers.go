@@ -40,7 +40,11 @@ func GenerateLRC(music types.Music) string {
 	data.WriteString(fmt.Sprintf("[%s:%s]\n\n", language, music.Language))
 
 	for _, lyric := range music.Lyrics {
-		data.WriteString(fmt.Sprintf("[%s]%s\n", lyric.Time, lyric.Value))
+		if lyric.Value == "" {
+			data.WriteString(fmt.Sprintf("[%s]♪\n", lyric.Time))
+		} else {
+			data.WriteString(fmt.Sprintf("[%s]%s\n", lyric.Time, lyric.Value))
+		}
 	}
 
 	return data.String()

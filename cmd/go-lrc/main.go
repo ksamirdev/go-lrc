@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"net"
 	"net/http"
 
 	"github.com/samocodes/go-lrc/env"
@@ -19,7 +19,7 @@ func (app *Application) Serve() error {
 	log.Printf("🚀 Server listening to port %s", port)
 
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", port),
+		Addr:    net.JoinHostPort("localhost", port),
 		Handler: routes.Routes(),
 	}
 
