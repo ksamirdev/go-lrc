@@ -12,9 +12,9 @@ import (
 	"github.com/samocodes/go-lrc/helpers"
 	"github.com/samocodes/go-lrc/types"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
-	"github.com/go-chi/cors"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+
 	"github.com/unrolled/secure"
 )
 
@@ -25,22 +25,12 @@ func Routes() http.Handler {
 		FrameDeny:          true,
 		ContentTypeNosniff: true,
 		BrowserXssFilter:   true,
-
-		// 	Allows htmx's script to be loaded
-		// ContentSecurityPolicy: "default-src 'self'; script-src 'self' https://unpkg.com 'nonce-a23gbfz9e'; style-src 'self';",
 	})
 
 	router := chi.NewRouter()
 	router.Use(secureMiddleware.Handler)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Logger)
-	router.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"http://*", "https://*"},
-		AllowedMethods: []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders: []string{"Link"},
-		MaxAge:         300,
-	}))
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		// if request header doesn't accepts text/html, then return a html template
@@ -73,7 +63,7 @@ func Routes() http.Handler {
 	router.Post("/lrc", func(w http.ResponseWriter, r *http.Request) {
 		b, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Body was not provided", http.StatusBadRequest)
+			http.Error(w, "Body was not provided!", http.StatusBadRequest)
 			return
 		}
 
