@@ -1,4 +1,4 @@
-module github.com/samocodes/go-lrc
+module github.com/ksamirdev/go-lrc
 
 go 1.22.4
 
